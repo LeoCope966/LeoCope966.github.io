@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html> 
+  <head>
+    <title>Processing.JS inside Webpages: Template</title> 
+  </head>
+  <body>
+	<!--This draws the canvas on the webpage -->
+    <canvas id="mycanvas"></canvas> 
+  </body>
+ 
+  <!-- Include the processing.js library -->
+  <!-- See https://khanacademy.zendesk.com/hc/en-us/articles/202260404-What-parts-of-ProcessingJS-does-Khan-Academy-support- for differences -->
+  <script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script> 
+  <script>
+  var programCode = function(processingInstance) {
+    with (processingInstance) {
+      size(400, 400); 
+      frameRate(30);
+        
+      // Paste code from Khan Academy here:
+
+/* - Added an hover function that changes the color on tiles facing down.
+   - Added the playing time. It reset when starting a new game.
+   - Added a starting push-button. It changes colors when mouse hovers it and it starts
+   -    a new game when it is pushed.
+*/
+
+var Tile = function(x, y, face) {
+    this.x = x;
+    this.y = y;
+    this.size = 50;
+    this.face = face;
+    this.isFaceUp = false;
+    this.isMatch = false;
+    this.isColor = false;       // NEW
+};
+
+// adding figures for WEB environment.
+
+
+// Changing color in triangles
+
+var triangBlack = function(x,y) {
+    this.x = x;
+    this.y = y;
+    fill(46, 9, 48);
+    strokeWeight(0.001);
+    triangle(this.x + 10, this.y + 40, this.x +25, this.y + 10, this.x +40, this.y + 40);
+};
+
+var triangGray = function(x,y) {
+    this.x = x;
+    this.y = y;
+    fill(162, 150, 163);
+    strokeWeight(0.001);
+    triangle(this.x + 10, this.y + 40, this.x +25, this.y + 10, this.x +40, this.y + 40);
+};
+
+var makePic = function(face,x,y) {
+    this.x = x;
+    this.y = y;
+    strokeWeight(0.001);
+    
+    if (face === "squareRed") {
+        fill(242, 12, 70);  // red 
+        rect(this.x + 10, this.y + 10, 30, 30, 0);
+    }
+    else if (face === "squareYellow") {
+        fill(250, 250, 0);  // yellow 
+        rect(this.x + 10, this.y + 10, 30, 30, 0);
+    }
+    else if (face === "squareBlue") {
+        fill(0, 0, 250);  // blue
+        rect(this.x + 10, this.y + 10, 30, 30, 0);
+    }
+    else if (face === "squareGreen") {
+        fill(9, 242, 25);  // green
+        rect(this.x + 10, this.y + 10, 30, 30, 0);
+    }
+    else if (face === "squareViolet") {
+        fill(229, 12, 240);  // violet
+        rect(this.x + 10, this.y + 10, 30, 30, 0);
+    }
+    else if (face === "circleRed") {
+        fill(242, 12, 70);  // red
+        ellipse(this.x + 25, this.y + 25, 35, 35);
+    }
+    else if (face === "circleYellow") {
+        fill(250, 250, 0);  // yellow 
+        ellipse(this.x + 25, this.y + 25, 35, 35);
+    }
+    else if (face === "circleBlue") {
+        fill(0, 0, 250);  // blue
+        ellipse(this.x + 25, this.y + 25, 35, 35);
+    }
+    else if (face === "circleGreen") {
+        fill(9, 242, 25);  // green
+        ellipse(this.x + 25, this.y + 25, 35, 35);
+    }
+    else if (face === "circleViolet") {
+        fill(229, 12, 240);  // violet
+        ellipse(this.x + 25, this.y + 25, 35, 35);
+    }
+    
+};
+
+//  End new stuff.
+
+Tile.prototype.draw = function() {
+    fill(214, 247, 202);
+    strokeWeight(2);
+    rect(this.x, this.y, this.size, this.size, 10);
+    if (this.isFaceUp) {
+//        image(this.face, this.x, this.y, this.size, this.size);
+
+       makePic(this.face, this.x, this.y);
+    
+    }else if (this.isColor) {                                                      // NEW
+//        image(getImage("avatars/leaf-red"), this.x, this.y, this.size, this.size); // NEW
+
+       triangGray(this.x, this.y);
+
+    }else {
+//        image(getImage("avatars/leaf-green"), this.x, this.y, this.size, this.size);
+
+       triangBlack(this.x, this.y);
+
+    }
+};
+
+Tile.prototype.isUnderMouse = function(x, y) {
+    return x >= this.x && x <= this.x + this.size  &&
+        y >= this.y && y <= this.y + this.size;
+};
+
+// If tile is under mouse  and not face up, change color.     NEW function
+
+Tile.prototype.tileColor = function(x,y) {
+    this.isColor = (this.isUnderMouse(mouseX, mouseY) && !this.isFaceUp); 
+};
+
+// Global config
+var NUM_COLS = 5;
+var NUM_ROWS = 4;
+
+// Declare an array of all possible faces
+
+/*
+var faces = [
+    getImage("avatars/leafers-seed"),
+    getImage("avatars/leafers-seedling"),
+    getImage("avatars/leafers-sapling"),
+    getImage("avatars/leafers-tree"),
+    getImage("avatars/leafers-ultimate"),
+    getImage("avatars/marcimus"),
+    getImage("avatars/mr-pants"),
+    getImage("avatars/mr-pink"),
+    getImage("avatars/old-spice-man"),
+    getImage("avatars/robot_female_1")
+];
+*/
+
+var faces = [
+    "squareRed",
+    "squareYellow",
+    "squareBlue",
+    "squareGreen",
+    "squareViolet",
+    "circleRed",
+    "circleYellow",
+    "circleBlue",
+    "circleGreen",
+    "circleViolet"
+];
+
+var tiles = [];
+
+// Get new sorted tiles.
+var sortTiles = function() {
+
+    // Make an array which has 2 of each, then randomize it
+    var possibleFaces = faces.slice(0);
+    var selected = [];
+    for (var i = 0; i < (NUM_COLS * NUM_ROWS) / 2; i++) {
+        // Randomly pick one from the array of remaining faces
+        var randomInd = floor(random(possibleFaces.length));
+        var face = possibleFaces[randomInd];
+        // Push twice onto array
+        selected.push(face);
+        selected.push(face);
+        // Remove from array
+        possibleFaces.splice(randomInd, 1);
+    }
+
+    // Now shuffle the elements of that array
+    var shuffleArray = function(array) {
+        var counter = array.length;
+
+        // While there are elements in the array
+        while (counter > 0) {
+            // Pick a random index
+            var ind = Math.floor(Math.random() * counter);
+            // Decrease counter by 1
+            counter--;
+            // And swap the last element with it
+            var temp = array[counter];
+            array[counter] = array[ind];
+            array[ind] = temp;
+        }
+    };
+    shuffleArray(selected);
+
+    // Create the tiles
+    tiles = [];
+    for (var i = 0; i < NUM_COLS; i++) {
+        for (var j = 0; j < NUM_ROWS; j++) {
+            var tileX = i * 54 + 10;
+            var tileY = j * 54 + 40;
+            var tileFace = selected.pop();
+            tiles.push(new Tile(tileX, tileY, tileFace));
+        }
+    }
+};
+
+sortTiles();
+
+background(255, 255, 255);
+
+var numTries = 0;
+var numMatches = 0;
+var flippedTiles = [];
+var delayStartFC = null;
+var gameFinished = false;               // NEW
+var gameTime = null;                    // NEW
+var gameStartTime = null;               // NEW
+
+mouseClicked = function() {
+
+// for playing game.
+    for (var i = 0; i < tiles.length; i++) {
+        var tile = tiles[i];
+        if (tile.isUnderMouse(mouseX, mouseY)) {
+            if (flippedTiles.length < 2 && !tile.isFaceUp) {
+                tile.isFaceUp = true;
+                flippedTiles.push(tile);
+                if (flippedTiles.length === 2) {
+                    numTries++;
+                    if (flippedTiles[0].face === flippedTiles[1].face) {
+                        flippedTiles[0].isMatch = true;
+                        flippedTiles[1].isMatch = true;
+                        flippedTiles.length = 0;
+                        numMatches++;
+                    }
+                    delayStartFC = gameTime;
+                }
+            } 
+            loop();
+        }
+    }
+
+    // Mouse click restart game                                             NEW 
+    if ((gameFinished) && ( mouseX >= 70 && mouseX <= 70 + 150  &&       // NEW 
+        mouseY >= 280 && mouseY <= 280 + 40)) {                          // NEW 
+
+        
+    sortTiles();
+
+        for (var i = 0; i < tiles.length; i++) {
+            var tile = tiles[i];
+            tile.isFaceUp = false;
+            tile.isMatch = false;  // NEW
+            //   loop();
+        }
+       
+        gameFinished = false;            // NEW
+        gameTime = 0;                    // NEW
+        numMatches = 0;                  // NEW
+        numTries = 0;                    // NEW
+        draw();
+    }
+
+};
+
+draw = function() {
+    background(255, 255, 255);
+    if (delayStartFC && (gameTime - delayStartFC) > 50) {
+        for (var i = 0; i < tiles.length; i++) {
+            var tile = tiles[i];
+            if (!tile.isMatch) {
+                tile.isFaceUp = false;
+            }
+        }
+        flippedTiles = [];
+        delayStartFC = null;
+//            noLoop();                   
+    }
+    
+    for (var i = 0; i < tiles.length; i++) {
+        tiles[i].tileColor();                            // NEW
+        tiles[i].draw();
+    }
+    
+    if (numMatches === tiles.length/2) {
+        gameFinished = true;                    // NEW
+        fill(0, 0, 0);
+        textSize(20);
+        text("You found them all in " + numTries + " tries!", 20, 375);
+    }
+
+    if (gameFinished) {                                     // NEW
+        gameStartTime = frameCount ;       // NEW
+    }else {                                                 // NEW
+        gameTime = frameCount - gameStartTime ;           // NEW
+    }
+        
+    fill(0, 0, 0);                                 // NEW
+    textSize(20);                                  // NEW
+    text("Playing time: " + Math.floor(gameTime / 100) + " sec.", 20, 20);       // NEW
+
+    // Restart push-button.                           NEW
+
+    // Mouse over button color.                       NEW 
+    if ( mouseX >= 70 && mouseX <= 70 + 150  &&    // NEW 
+        mouseY >= 280 && mouseY <= 280 + 40) {     // NEW 
+        fill(230, 230, 64);                        // NEW
+    }else {                                        // NEW 
+        fill(214, 247, 202);                       // NEW
+    }                                              // NEW 
+
+    // Draw button.                                   NEW 
+    strokeWeight(2);                               // NEW
+    rect(70, 280, 150, 40, 10);                    // NEW
+
+    // Text on buttom.                                NEW 
+    fill(0, 0, 0);                                 // NEW 
+    textSize(20);                                  // NEW 
+    if (!gameFinished) {                           // NEW 
+        text("Running", 110, 307);                 // NEW 
+    }else {                                        // NEW 
+        text("Restart", 110, 307);                 // NEW 
+    }                                              // NEW
+
+};
+
+
+
+
+// End of Khan Java code.
+
+      // Stop pasting here the code from the Khan place.
+
+
+    }};
+
+  // Get the canvas that ProcessingJS will use
+  var canvas = document.getElementById("mycanvas"); 
+  // Pass the function to ProcessingJS constructor
+  var processingInstance = new Processing(canvas, programCode); 
+  </script>
+</html>
