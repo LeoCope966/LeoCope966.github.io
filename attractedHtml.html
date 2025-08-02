@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html> 
+  <head>
+    <title>Processing.JS inside Webpages: Template</title> 
+  </head>
+  <body>
+	<!--This draws the canvas on the webpage -->
+    <canvas id="mycanvas"></canvas> 
+  </body>
+ 
+  <!-- Include the processing.js library -->
+  <!-- See https://khanacademy.zendesk.com/hc/en-us/articles/202260404-What-parts-of-ProcessingJS-does-Khan-Academy-support- for differences -->
+  <script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script> 
+  <script>
+  var programCode = function(processingInstance) {
+    with (processingInstance) {
+      size(800, 500); 
+      frameRate(60);
+        
+      // Paste code from Khan Academy here:
+
+//Bacterium project - Second part
+
+/*
+
+  There are two groups of bacteria, the red and the blue. 
+  They are attracted to the other group bacteria.
+  After aprox 30 sec, they start to eat each other of the other group. 
+  The original mass of them is random, later the larger ones eat the smaller ones, 
+  increasing size.
+  To keep them moving in the center, every aprox. 30 sec they get a new random 
+  target to go.
+
+*/
+
+size(800, 500, 200 );  //new size 
+var timme = 0;
+var numBacteriaR = 20;
+var numBacteriaB = 20;
+var startEating = false;
+var G = 1;
+
+var Bacterium = function(m) {
+    
+    this.position = new PVector(random(20,width - 20), random(20,height - 20));
+    this.velocity = new PVector(0, 0);
+    this.acceleration = new PVector(0, 0);
+    this.posTarget = new PVector(random(20,width - 20), random(20,height - 20));
+    this.alive = false;
+    this.diameter = 10  * sqrt(m);   // Starting diameter of the bacteria. 
+    this.mass = m;  // random(0.5, 2)
+    this.color = -1234567 ;
+    this.friction = new PVector(0, 0);
+    
+};
+
+Bacterium.prototype.applyForce = function(force) {
+    
+    var f = PVector.div(force, this.mass);
+    this.acceleration.add(f);
+};
+
+Bacterium.prototype.update = function() {
+    
+    var maxDir = PVector.sub( new PVector(0, 0), new PVector ( width-1, height-1));
+    var maxMag = maxDir.mag();
+    var dir = PVector.sub(this.posTarget, this.position);
+    var closeness = ((maxMag-dir.mag())/maxMag);
+    dir.normalize();
+    dir.mult(0.1 * closeness);  // 0.1 speeds up movement
+    
+    this.acceleration.add(dir) ;
+
+    this.friction = PVector.mult(this.velocity, -0.02); // friction
+    this.acceleration.add(this.friction) ;
+
+    this.velocity.add(this.acceleration);
+    this.velocity.limit(5);
+    this.position.add(this.velocity);
+    this.acceleration.mult(0);
+};
+
+Bacterium.prototype.display = function(diam, color) {
+    
+    stroke(0);
+    strokeWeight(1);
+    fill(color);
+    ellipse(this.position.x, this.position.y, diam, diam); 
+    
+};
+
+Bacterium.prototype.calculateAttraction = function(bact2) {
+    
+    var force = PVector.sub(this.position, bact2.position);
+    var distance = force.mag();
+    distance = constrain(distance, 5.0, 25.0);
+    force.normalize();
+    var strength = (G * this.mass * bact2.mass) / (distance * distance); 
+    force.mult(strength);
+    return force;
+    
+};
+
+Bacterium.prototype.applyForce = function(force, bact2) {
+    
+    var f = PVector.div(force, this.mass);
+    this.acceleration.add(f);
+    var f = PVector.div(force, bact2.mass);
+    bact2.acceleration.sub(f);
+    
+};
+
+Bacterium.prototype.checkEdges = function() {
+
+  if (this.position.x > width) {
+    this.position.x = 0;
+  } else if (this.position.x < 0) {
+    this.position.x = width;
+  }
+
+  if (this.position.y > height) {
+    this.position.y = 0;
+  } else if (this.position.y < 0) {
+    this.position.y = height;
+  }
+  
+};
+
+Bacterium.prototype.rePosition = function() {
+    
+  this.posTarget.x = floor(random(20,width - 20));
+  this.posTarget.y = floor(random(20,height - 20));
+  
+};
+
+// Main program
+
+var bacteriaR = [];
+var bacteriaB = [];
+
+for (var i = 0; i < numBacteriaR; i++) {    // Number of red bacteria.
+      bacteriaR[i]= new Bacterium(random(0.5, 2));
+      bacteriaR[i].posTarget.x = random(20,width - 20);   //50 + i * 100;
+      bacteriaR[i].posTarget.y = random(20,height - 20);   // 100;
+      bacteriaR[i].alive = true;
+      bacteriaR[i].color = color(255, 0, 0) ;
+}
+
+for (var i = 0; i < numBacteriaB; i++) {    // Number of blue bacteria.
+      bacteriaB[i]= new Bacterium(random(0.5, 2));
+      bacteriaB[i].posTarget.x = random(20,width - 20);   //50 + i * 100;
+      bacteriaB[i].posTarget.y = random(20,height - 20);   // 100;
+      bacteriaB[i].alive = true;
+      bacteriaB[i].color = color(0, 0, 255) ;
+}
+
+// Restart.
+
+mousePressed = function() { 
+   noLoop(); 
+//   Program.restart(); it does not work on the web.
+   timme = 0;
+   startEating = false;
+
+   bacteriaR = [];
+   bacteriaB = [];
+ 
+   for (var i = 0; i < numBacteriaR; i++) {    // Number of red bacteria.
+      bacteriaR[i]= new Bacterium(random(0.5, 2));
+      bacteriaR[i].posTarget.x = random(20,width - 20);   //50 + i * 100;
+      bacteriaR[i].posTarget.y = random(20,height - 20);   // 100;
+      bacteriaR[i].alive = true;
+      bacteriaR[i].color = color(255, 0, 0) ;
+  }
+
+   for (var i = 0; i < numBacteriaB; i++) {    // Number of blue bacteria.
+      bacteriaB[i]= new Bacterium(random(0.5, 2));
+      bacteriaB[i].posTarget.x = random(20,width - 20);   //50 + i * 100;
+      bacteriaB[i].posTarget.y = random(20,height - 20);   // 100;
+      bacteriaB[i].alive = true;
+      bacteriaB[i].color = color(0, 0, 255) ;
+   }
+};
+
+mouseReleased = function() {
+    loop();
+};
+
+draw = function() {
+   background(255, 255, 255);
+  
+  // Apply attraction between bacteria of different groups
+  
+   for (var i = 0; i < bacteriaR.length; i++) {
+       
+        for (var j = 0; j < bacteriaB.length; j++) {
+            
+                var force = bacteriaB[j].calculateAttraction(bacteriaR[i]);
+                bacteriaR[i].applyForce(force, bacteriaB[j] );
+        }
+    }
+  
+   for (var i = 0; i < bacteriaR.length; i++) {   // Number of red bacteria.
+   
+      if(bacteriaR[i].alive){
+      bacteriaR[i].update();
+      bacteriaR[i].checkEdges();
+      bacteriaR[i].display(bacteriaR[i].diameter, bacteriaR[i].color); 
+      }
+      
+   }
+   
+   for (var i = 0; i < bacteriaB.length; i++) {   // Number of blue bacteria.
+   
+      if(bacteriaB[i].alive){
+      bacteriaB[i].update();
+      bacteriaB[i].checkEdges();
+      bacteriaB[i].display(bacteriaB[i].diameter, bacteriaB[i].color); 
+      }
+      
+   }
+   
+   if (timme < 150) {   //   Reposition time.
+   
+       timme++;
+   }
+   else {
+      for (var i = 0; i < bacteriaR.length; i++) {  //Number of red bacteria.
+          bacteriaR[i].rePosition();
+      }
+      for (var i = 0; i < bacteriaB.length; i++) {  //Number of blue bacteria.
+          bacteriaB[i].rePosition();
+      }
+      timme = 0;
+      startEating = true;
+   }
+   
+   // Encounter between red bacterium and blue bacterium.
+   
+   var  proximity = new PVector(0, 0);
+   var maxMag = 0;
+
+   for (var i = 0; i < bacteriaR.length ; i++) {  //Number of red bacteria 
+   
+       for (var j = i ; j < bacteriaB.length ; j++) {  //Number of blue bacteria 
+           if(bacteriaR[i].alive & bacteriaB[j].alive & startEating) {
+               proximity = PVector.sub( bacteriaR[i].position, bacteriaB[j].position);
+               maxMag = proximity.mag();
+               if(maxMag < (bacteriaR[i].diameter + bacteriaB[j].diameter) / 2) {
+                   if(bacteriaR[i].diameter > bacteriaB[j].diameter) {
+                      bacteriaR[i].mass += bacteriaB[j].mass;
+                      bacteriaR[i].diameter = 10  * sqrt(bacteriaR[i].mass);
+                      bacteriaB[j].alive = false;
+                   }
+                   else if(bacteriaR[i].diameter < bacteriaB[j].diameter){   
+                      bacteriaB[j].mass += bacteriaR[i].mass;
+                      bacteriaB[j].diameter = 10  * sqrt(bacteriaB[j].mass);
+                      bacteriaR[i].alive = false;               
+                   }
+               }       
+           }
+       }
+   }
+   
+    // Remove dead bacterium. 
+    
+   for (var k = 0; k < bacteriaR.length; k++) {   // Number of red bacteria. 
+      
+        if(! (bacteriaR[k].alive)){
+          bacteriaR.splice(k,1);
+            
+        }
+   }
+   
+   for (var k = 0; k < bacteriaB.length; k++) {   // Number of blue bacteria. 
+      
+        if(! (bacteriaB[k].alive)){
+          bacteriaB.splice(k,1);
+            
+        }
+   }
+   
+    fill(0);
+    text(" bacteria          red: " + bacteriaR.length + "    blue: " + bacteriaB.length ,  50, 50);
+  
+};
+
+// End of Khan Java code.
+
+      // Stop pasting here the code from the Khan place.
+
+    }};
+
+  // Get the canvas that ProcessingJS will use
+  var canvas = document.getElementById("mycanvas"); 
+  // Pass the function to ProcessingJS constructor
+  var processingInstance = new Processing(canvas, programCode); 
+  </script>
+</html>
