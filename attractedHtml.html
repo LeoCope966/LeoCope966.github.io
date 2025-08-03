@@ -242,7 +242,7 @@ draw = function() {
 
    for (var i = 0; i < bacteriaR.length ; i++) {  //Number of red bacteria 
    
-       for (var j = i ; j < bacteriaB.length ; j++) {  //Number of blue bacteria 
+       for (var j = 0 ; j < bacteriaB.length ; j++) {  //Number of blue bacteria 
            if(bacteriaR[i].alive & bacteriaB[j].alive & startEating) {
                proximity = PVector.sub( bacteriaR[i].position, bacteriaB[j].position);
                maxMag = proximity.mag();
@@ -297,3 +297,4 @@ draw = function() {
   var processingInstance = new Processing(canvas, programCode); 
   </script>
 </html>
+
