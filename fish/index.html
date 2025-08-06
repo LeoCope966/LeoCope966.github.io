@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html> 
+  <head>
+    <title>Processing.JS inside Webpages: Template</title> 
+  </head>
+  <body>
+	<!--This draws the canvas on the webpage -->
+    <canvas id="mycanvas"></canvas> 
+  </body>
+ 
+  <!-- Include the processing.js library -->
+  <!-- See https://khanacademy.zendesk.com/hc/en-us/articles/202260404-What-parts-of-ProcessingJS-does-Khan-Academy-support- for differences -->
+  <script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script> 
+  <script>
+  var programCode = function(processingInstance) {
+    with (processingInstance) {
+      size(800, 600); 
+      frameRate(60);
+        
+      // Paste code from Khan Academy here:
+
+// Peces
+
+angleMode = "radians";
+
+var Attractor = function() {
+    this.position = new PVector(width/2, height/2);
+    this.mass = 20;
+    this.G = 1;
+};
+
+Attractor.prototype.calculateAttraction = function(m) {
+    // Calculate direction of force
+    var force = PVector.sub(this.position, m.position);
+    // Distance between objects       
+    var distance = force.mag();
+    // Limiting the distance to eliminate "extreme" results for very close or very far objects                            
+    distance = constrain(distance, 5, 25);
+    // Normalize vector (distance doesn't matter here, we just want this vector for direction)                                  
+    force.normalize();
+    // Calculate gravitional force magnitude  
+    var strength = (this.G * this.mass * m.mass) / (distance * distance);
+    // Get force vector --> magnitude * direction
+    force.mult(strength);
+    return force;
+};
+
+Attractor.prototype.display = function() {
+    ellipseMode(CENTER);
+    strokeWeight(1);
+    stroke(0);
+    fill(255, 255, 0);
+    ellipse(this.position.x, this.position.y, this.mass*2, this.mass*2);
+};
+
+var Mover = function(m, x, y) {
+    this.position = new PVector(x, y);
+    this.mass = m;
+    
+    this.angle = 0;
+    this.aVelocity = 0;
+    this.aAcceleration = 0.01;
+    
+    this.velocity = new PVector(random(-1, 1), random(-1, 1));
+    this.acceleration = new PVector(0, 0);
+};
+
+Mover.prototype.applyForce = function(force) {
+    var f = PVector.div(force, this.mass);
+    this.acceleration.add(f);
+};
+
+Mover.prototype.update = function () {
+    
+    this.velocity.add(this.acceleration);
+    this.position.add(this.velocity);
+    
+    this.aVelocity += this.aAcceleration;
+    this.aVelocity = constrain(this.aVelocity, -0.1, 0.1);
+
+ /*   // adapting the atan() to the vectors
+
+    var  atanVal = 0;
+    var aX = this.velocity.x ;
+    var aY = this.velocity.y ;
+    var  val = (aY / aX);
+
+    if((aX >= 0 & aY >= 0) || (aX >= 0 & aY <= 0)  ) {   
+    
+        atanVal = atan(val);
+    }
+    else if((aX <= 0 & aY >= 0) || (aX <= 0 & aY <= 0)){
+    
+        atanVal = PI + atan(val);
+    } */
+    
+    // using atan2()
+    
+    var atanVal = atan2(this.velocity.y, this.velocity.x);
+    
+    this.angle = atanVal;                             
+    this.acceleration.mult(0);
+};
+
+Mover.prototype.display = function () {
+    var polarX = 1;
+    var polarY = 1;
+    stroke(0, 0, 0);
+    fill(51, 230, 116);
+    rectMode(CENTER);
+    pushMatrix();
+    translate(this.position.x, this.position.y);
+    rotate(this.angle);
+    rect(0, 0, this.mass*40, this.mass*5, 100);
+    
+    fill(255, 0, 0);
+    ellipse(this.mass*15 , this.mass*3, this.mass*4, this.mass*4);
+    ellipse(this.mass*15 , -this.mass*3, this.mass*4, this.mass*4);
+    popMatrix();
+};
+
+var movers = [];
+var attractor = new Attractor();
+
+for (var i = 0; i < 4; i++) {      //
+   movers.push(new Mover(random(1, 3), random(width), random(height)));
+}
+
+draw = function() {
+  background(0, 204, 255);
+
+  attractor.display();
+
+  for (var i = 0; i < movers.length; i++) {
+    var force = attractor.calculateAttraction(movers[i]);
+    movers[i].applyForce(force);
+
+    movers[i].update();
+    movers[i].display();
+  }
+//  text(movers[0].angle, 50, 50);
+};
+
+// End of Khan Java code.
+
+      // Stop pasting here the code from the Khan place.
+
+
+    }};
+
+  // Get the canvas that ProcessingJS will use
+  var canvas = document.getElementById("mycanvas"); 
+  // Pass the function to ProcessingJS constructor
+  var processingInstance = new Processing(canvas, programCode); 
+  </script>
+</html>
