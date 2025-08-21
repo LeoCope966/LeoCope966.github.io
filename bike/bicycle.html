@@ -103,7 +103,7 @@ draw = function()  {
        quad(  i * 20 + timeTerrainRnd +20, 270 + 100 * blockHight[i+3],  i * 20 + timeTerrainRnd +20,  230 + 100 * blockHight[i+2] + 200,  i * 20 + timeTerrainRnd ,  230 + 100 * blockHight[i+2] + 200,                   i * 20 + timeTerrainRnd ,         270 + 100 * blockHight[i+2]);   
     } 
     
- // Bike 
+ // Bike.
  
 translate(0,  (blockHight[0] + blockHight[10])*50 - 60) ; //      
 
@@ -219,7 +219,7 @@ line(crankRX, crankRY, kneeR.x , kneeR.y);          //  right leg lower leg
         timeTerrain = 0;
  
         if(blockHight.length < 30){                     // Stops if something is wrong
-            blockHight.unshift(noise(gg/100));       // /10 ?? Changes shape of noise
+            blockHight.unshift(noise(gg/100));       // /10 Changes shape of noise
                  blockHight.pop();
                  gg += 1;      // It moves for next noise
                  fill(255, 0, 0);
