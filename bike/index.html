@@ -19,11 +19,12 @@
         
       // Paste code from Khan Academy here:
 
-// Bike on Khan Academy javascript.
+// Bike 
 
 background(235, 235, 235);
 rectMode(CENTER);
-angleMode = "degrees";
+
+angleMode = "radians";
 
 var timeAngle = 0;
 var time = 0;
@@ -119,7 +120,7 @@ strokeWeight(3);
 
     for(var i = 0; i < 16 ; i += 1) {               // Front wheel spokes
     
-        var    wheelAngle = i * 22.5 + timeAngle;
+        var    wheelAngle = i * PI/8 + timeAngle;
         var    spokeX = 130 + 50 * sin(wheelAngle);
         var    spokeY = 280 + 50 * cos(wheelAngle);
     
@@ -128,7 +129,7 @@ strokeWeight(3);
 
     for(var i = 0; i < 16 ; i += 1) {               // Back wheel spokes
     
-        var    wheelAngle = i * 22.5 + timeAngle;
+        var    wheelAngle = i * PI/8 + timeAngle;
         var    spokeX = 300 + 50 * sin(wheelAngle);
         var    spokeY = 280 + 50 * cos(wheelAngle);
     
@@ -136,7 +137,7 @@ strokeWeight(3);
     }
 
     // cranks - point 5 = 220, 280
-    var crankAngle = time * 8 * bikeSpeed * 2 * PI / 360;         //  Pedaling speed              WORKING radians or degree
+    var crankAngle = time * 700 * bikeSpeed * 2 * PI / 360; //  Pedaling speed  700
 
     var    crankLX = 220 + 20 * sin(crankAngle);
     var    crankLY = 280 + 20 * cos(crankAngle);
@@ -227,14 +228,13 @@ line(crankRX, crankRY, kneeR.x , kneeR.y);          //  right leg lower leg
         }
     }
    
-    timeTerrain += 8 ;   // speed on terrain 8.0
+    timeTerrain += 6 ;   // speed on terrain 6
 
-time += 0.2 ;  // speed on bike  0.2
+time += 0.003 ;  // speed on bike  0.003
 
-//  println(noise(gg/10) + "   " + bikeAngle);
 };
 
-      // Stop pasting here the code from the Khan place.
+  // Stop pasting here the code from the Khan place.
 
 
     }};
