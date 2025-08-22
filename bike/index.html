@@ -92,8 +92,8 @@ var bikeAngle = 0;
 draw = function()  {
   
     background(255, 0, 111,0);
-    strokeWeight(1);
-//    noStroke();
+    
+    noStroke();
     
     var timeTerrainRnd = round(timeTerrain);
     
@@ -104,14 +104,16 @@ draw = function()  {
        // quadrilateral base or ground
   
        quad(  i * 20 + timeTerrainRnd +20, 270 + 100 * blockHight[i+3],  i * 20 + timeTerrainRnd +20,  230 + 100 * blockHight[i+2] + 200,  i * 20 + timeTerrainRnd ,  230 + 100 * blockHight[i+2] + 200,                   i * 20 + timeTerrainRnd ,         270 + 100 * blockHight[i+2]);   
-    } 
+    }
+
+    stroke(0); 
     
  // Bike 
  
  // Translate and rotate                                            
 
     pushMatrix();
-        //translate(0,  (blockHight[0] + blockHight[10])*50 - 60) ; //  
+
     translate(-xX, -yY - 60 + (blockHight[7] + blockHight[16])*50 );
 
     bikeAngle = - atan((blockHight[7] - blockHight[16])*100 / 200);
@@ -228,15 +230,15 @@ popMatrix();
         timeTerrain = 0;
  
         if(blockHight.length < 30){                     // Stops if something is wrong
-            blockHight.unshift(noise(gg/20));       // /10 ?? Changes shape of noise
+            blockHight.unshift(noise(gg/20));           //  Changes shape of noise. 20
                  blockHight.pop();
-                 gg += 1;      // It moves for next noise
+                 gg += 1;                               // It moves for next noise
                  fill(255, 0, 0);
                 
         }
     }
    
-    timeTerrain += 6 ;   // speed on terrain 6
+    timeTerrain += 6 ;                                 // speed on terrain. 6
 
 time += 0.003 ;  // speed on bike  0.003
 
@@ -254,5 +256,6 @@ time += 0.003 ;  // speed on bike  0.003
   var processingInstance = new Processing(canvas, programCode); 
   </script>
 </html>
+
 
 
