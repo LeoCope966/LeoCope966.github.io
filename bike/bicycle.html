@@ -19,11 +19,12 @@
         
       // Paste code from Khan Academy here:
 
-// Bike on Khan Academy javascript.
+// Bike 
 
 background(235, 235, 235);
 rectMode(CENTER);
-angleMode = "degrees";
+
+angleMode = "radians";
 
 var timeAngle = 0;
 var time = 0;
@@ -31,6 +32,8 @@ var bikeSpeed = 2;
 var timeTerrain = 0;
 var roadPerlin = 0;
 var roadSlope = 0;
+var xX = -220;   //  rotation point
+var yY = -327;   //  rotation point
 
 var bike = function()  {
 
@@ -38,42 +41,42 @@ fill(235, 235, 235, 0);
 strokeWeight(3);
 
 beginShape();      // Frame
-vertex(220, 280);  // 1
-vertex(150, 210);  // 2
-vertex(153, 200);  // 3
-vertex(260, 200);  // 4
-vertex(220, 280);  // 5
-vertex(300, 280);  // 6
-vertex(260, 200);  // 7
+vertex(220+xX, 280+yY);  // 1
+vertex(150+xX, 210+yY);  // 2
+vertex(153+xX, 200+yY);  // 3
+vertex(260+xX, 200+yY);  // 4
+vertex(220+xX, 280+yY);  // 5
+vertex(300+xX, 280+yY);  // 6
+vertex(260+xX, 200+yY);  // 7
 endShape(CLOSE);
 
-line(260, 200, 265, 190);     // Seat post
-ellipse(130, 280, 100, 100);  // front tire
-ellipse(300, 280, 100, 100);  // back tire
+line(260+xX, 200+yY, 265+xX, 190+yY);     // Seat post
+ellipse(130+xX, 280+yY, 100, 100);  // front tire
+ellipse(300+xX, 280+yY, 100, 100);  // back tire
 
-line(130, 280, 161, 170);     // Fork
-line(140, 170, 161, 170);
-line(120, 178, 165, 161);     // Handle bar
-rect(268, 182, 30, 10, 10);   // Seat
-ellipse(220, 280, 25, 25);    // Crank disk
-ellipse(300, 280, 10, 10);    // Gear
+line(130+xX, 280+yY, 161+xX, 170+yY);     // Fork
+line(140+xX, 170+yY, 161+xX, 170+yY);
+line(120+xX, 178+yY, 165+xX, 161+yY);     // Handle bar
+rect(268+xX, 182+yY, 30, 10, 10);   // Seat
+ellipse(220+xX, 280+yY, 25, 25);    // Crank disk
+ellipse(300+xX, 280+yY, 10, 10);    // Gear
 strokeWeight(1);
-line(220, 268, 300, 274);     // Chain
-line(220, 294, 300, 286);
+line(220+xX, 268+yY, 300+xX, 274+yY);     // Chain
+line(220+xX, 294+yY, 300+xX, 286+yY);
 
 strokeWeight(3);
 fill(255, 0, 0);
-quad(200, 105, 280, 180, 250, 180, 200, 120); // torso
-ellipse(180, 110, 40, 30);  // head
+quad(200+xX, 105+yY, 280+xX, 180+yY, 250+xX, 180+yY, 200+xX, 120+yY); // torso
+ellipse(180+xX, 110+yY, 40, 30);  // head
 fill(255);
-ellipse(175, 115, 2, 2);                      // eye
-triangle(175, 127, 180, 127,180, 135);        // nose
+ellipse(175+xX, 115+yY, 2, 2);                      // eye
+triangle(175+xX, 127+yY, 180+xX, 127+yY,180+xX, 135+yY);        // nose
 
 strokeWeight(5);
-line(195, 157, 165, 161);                     // right arm
-line(195, 157, 205, 128); 
-line(205, 177, 210, 125);                     // left arm
-line(205, 177, 165, 135);
+line(195+xX, 157+yY, 165+xX, 161+yY);                     // right arm
+line(195+xX, 157+yY, 205+xX, 128+yY); 
+line(205+xX, 177+yY, 210+xX, 125+yY);                     // left arm
+line(205+xX, 177+yY, 165+xX, 135+yY);
 
 };
 
@@ -103,52 +106,56 @@ draw = function()  {
        quad(  i * 20 + timeTerrainRnd +20, 270 + 100 * blockHight[i+3],  i * 20 + timeTerrainRnd +20,  230 + 100 * blockHight[i+2] + 200,  i * 20 + timeTerrainRnd ,  230 + 100 * blockHight[i+2] + 200,                   i * 20 + timeTerrainRnd ,         270 + 100 * blockHight[i+2]);   
     } 
     
- // Bike.
+ // Bike 
  
-translate(0,  (blockHight[0] + blockHight[10])*50 - 60) ; //      
+ // Translate and rotate                                            
 
- bikeAngle = - atan((blockHight[3] - blockHight[17])*100 / 200);
- rotate(bikeAngle);
+    pushMatrix();
+        //translate(0,  (blockHight[0] + blockHight[10])*50 - 60) ; //  
+    translate(-xX, -yY - 60 + (blockHight[7] + blockHight[17])*50 );
 
-strokeWeight(3);
+    bikeAngle = - atan((blockHight[7] - blockHight[17])*100 / 200);
+    rotate(bikeAngle);
+
+    strokeWeight(3);
  
-     bike();
+    bike();
  
     strokeWeight(1);                              // spokes
     timeAngle = time * 16 * bikeSpeed ;   
 
     for(var i = 0; i < 16 ; i += 1) {               // Front wheel spokes
     
-        var    wheelAngle = i * 22.5 + timeAngle;
+        var    wheelAngle = i * PI/8 + timeAngle;
         var    spokeX = 130 + 50 * sin(wheelAngle);
         var    spokeY = 280 + 50 * cos(wheelAngle);
     
-        line(130, 280, spokeX, spokeY);             // front spokes
+        line(130+xX, 280+yY, spokeX+xX, spokeY+yY);             // front spokes
     }
 
     for(var i = 0; i < 16 ; i += 1) {               // Back wheel spokes
     
-        var    wheelAngle = i * 22.5 + timeAngle;
-        var    spokeX = 300 + 50 * sin(wheelAngle);
-        var    spokeY = 280 + 50 * cos(wheelAngle);
+        var    wheelAngle = i * PI/8 + timeAngle;
+        var    spokeX = 300+xX + 50 * sin(wheelAngle);
+        var    spokeY = 280+yY + 50 * cos(wheelAngle);
     
-        line(300, 280, spokeX, spokeY);             // back spokes
+        line(300+xX, 280+yY, spokeX, spokeY);             // back spokes
     }
 
     // cranks - point 5 = 220, 280
-    var crankAngle = time * 8 * bikeSpeed * 2 * PI / 360;         //  Pedaling speed              WORKING radians or degree
+    var crankAngle = time * 700 * bikeSpeed * 2 * PI / 360; //  Pedaling speed  700
 
-    var    crankLX = 220 + 20 * sin(crankAngle);
-    var    crankLY = 280 + 20 * cos(crankAngle);
+    var    crankLX = 220+xX + 20 * sin(crankAngle);
+    var    crankLY = 280+yY + 20 * cos(crankAngle);
 
     strokeWeight(3);
-    line(crankLX, crankLY, 220, 280);              // left side crank
+    line(crankLX, crankLY, 220+xX, 280+yY);              // left side crank
     rect(crankLX, crankLY, 10, 6, 5);              // left pedal 
 
-    var    crankRX = 220 + 20 * sin(crankAngle + PI);                                 //  WORKING radians or degree     
-    var    crankRY = 280 + 20 * cos(crankAngle + PI);                                 //  WORKING radians or degree
+    var    crankRX = 220+xX + 20 * sin(crankAngle + PI);                                 //  WORKING radians or degree     
+    var    crankRY = 280+yY + 20 * cos(crankAngle + PI);                                 //  WORKING radians or degree
 
-    line(crankRX, crankRY, 220, 280);              // right side crank
+    line(crankRX, crankRY, 220+xX, 280+yY);              // right side crank
     rect(crankRX, crankRY, 10, 6, 5);              // pedal 2      
 
 // leg position 
@@ -156,7 +163,7 @@ strokeWeight(3);
 strokeWeight(8);
 
 var thigh = 66;                               // lenght of thigh and also lower leg.
-var buttL = new PVector(250, 175);            // Hip joint
+var buttL = new PVector(250+xX, 175+yY);            // Hip joint
 var footL = new PVector(crankLX, crankLY);    // left foot position (pedal)
 var pointDL = new PVector();
 pointDL = PVector.add(buttL, footL);
@@ -166,21 +173,21 @@ var a = (PVector.sub(buttL, pointDL)).mag(); // distance between mid point and s
 
 var b = sqrt( thigh * thigh - a * a);
 
-var alpha = atan((250-pointDL.x) / (pointDL.y-175));
+var alpha = atan((250+xX-pointDL.x) / (pointDL.y-175+yY));
 
 var b_x = b * cos(alpha);
 var b_y = b * sin(alpha);
                                                  // left knee vector
 var kneeL = new PVector(pointDL.x - b * cos(alpha), pointDL.y - b * sin(alpha));
 //line(250, 175, pointDL.x - b_x,pointDL.y - b_y); // left leg thigh
-line(250, 175, kneeL.x , kneeL.y);                  // left leg thigh
+line(250+xX, 175+yY, kneeL.x , kneeL.y);                  // left leg thigh
 //line(crankLX, crankLY, pointDL.x - b_x,pointDL.y - b_y);  //  left leg lower leg
 line(crankLX, crankLY, kneeL.x , kneeL.y);          //  left leg lower leg
 
                   // now, the right side.
                   
 //var thigh = 66;                               // lenght of thigh and also lower leg.
-var buttR = new PVector(250, 175);            // Hip joint
+var buttR = new PVector(250+xX, 175+yY);            // Hip joint
 var footR = new PVector(crankRX, crankRY);    // right foot position (pedal)
 var pointDR = new PVector();
 pointDR = PVector.add(buttR, footR);
@@ -190,16 +197,18 @@ var aR = (PVector.sub(buttR, pointDR)).mag(); // distance between mid point and 
 
 var bR = sqrt( thigh * thigh - aR * aR);
 
-var alphaR = atan((250-pointDR.x) / (pointDR.y-175));
+var alphaR = atan((250+xX-pointDR.x) / (pointDR.y-175+yY));
 
 //var bR_x = bR * cos(alphaR);
 //var bR_y = bR * sin(alphaR);
                                                  // right knee vector
 var kneeR = new PVector(pointDR.x - bR * cos(alpha), pointDR.y - bR * sin(alphaR));
 //line(250, 175, pointDR.x - bR_x,pointDR.y - bR_y); // right leg thigh
-line(250, 175, kneeR.x , kneeR.y);                  // right leg thigh
+line(250+xX, 175+yY, kneeR.x , kneeR.y);                  // right leg thigh
 //line(crankRX, crankRY, pointDR.x - bR_x,pointDR.y - bR_y);  //  right leg lower leg
 line(crankRX, crankRY, kneeR.x , kneeR.y);          //  right leg lower leg
+
+popMatrix();
 
             //  after bike code. Array stuff   --    put this at the end of code.
   
@@ -207,7 +216,7 @@ line(crankRX, crankRY, kneeR.x , kneeR.y);          //  right leg lower leg
   
     if(once1 && blockHight.length < 28){               // Set noise array. 
         for(var i = 0; i < 28 ; i += 1) {              // Do only once
-            blockHight[i] = noise(i/10);               // Array and screen are shifted                                                         // by 3 elements.
+            blockHight[i] = noise(i/100);               // Array and screen are shifted                                                         // by 3 elements.
         }                                              // Array starts at 0, to unshift.
         once1 = false; 
     }
@@ -219,7 +228,7 @@ line(crankRX, crankRY, kneeR.x , kneeR.y);          //  right leg lower leg
         timeTerrain = 0;
  
         if(blockHight.length < 30){                     // Stops if something is wrong
-            blockHight.unshift(noise(gg/100));       // /10 Changes shape of noise
+            blockHight.unshift(noise(gg/80));       // /10 ?? Changes shape of noise
                  blockHight.pop();
                  gg += 1;      // It moves for next noise
                  fill(255, 0, 0);
@@ -227,14 +236,14 @@ line(crankRX, crankRY, kneeR.x , kneeR.y);          //  right leg lower leg
         }
     }
    
-    timeTerrain += 8 ;   // speed on terrain 8.0
+    timeTerrain += 6 ;   // speed on terrain 6
 
-time += 0.2 ;  // speed on bike  0.2
+time += 0.003 ;  // speed on bike  0.003
 
-//  println(noise(gg/10) + "   " + bikeAngle);
 };
 
-      // Stop pasting here the code from the Khan place.
+
+  // Stop pasting here the code from the Khan place.
 
 
     }};
