@@ -112,9 +112,9 @@ draw = function()  {
 
     pushMatrix();
         //translate(0,  (blockHight[0] + blockHight[10])*50 - 60) ; //  
-    translate(-xX, -yY - 60 + (blockHight[7] + blockHight[17])*50 );
+    translate(-xX, -yY - 60 + (blockHight[7] + blockHight[16])*50 );
 
-    bikeAngle = - atan((blockHight[7] - blockHight[17])*100 / 200);
+    bikeAngle = - atan((blockHight[7] - blockHight[16])*100 / 200);
     rotate(bikeAngle);
 
     strokeWeight(3);
@@ -254,4 +254,5 @@ time += 0.003 ;  // speed on bike  0.003
   var processingInstance = new Processing(canvas, programCode); 
   </script>
 </html>
+
 
