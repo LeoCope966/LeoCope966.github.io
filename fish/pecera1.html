@@ -17,7 +17,7 @@
       size(400, 400); 
       frameRate(60);
         
-      // Paste code from Khan Academy here:// The fishBall
+      // Paste code from Khan Academy here:
 
 // The fishBall
 
@@ -29,6 +29,7 @@
 
 angleMode = "radians";
 frameRate(60);               //  60
+size(400, 400);
 
 var Fish = function(origin) { 
     
@@ -241,13 +242,35 @@ Particle.prototype.calculateAtractForce = function(aFish) {
     
     var dirAngle = atan2(dir1.y,dir1.x);                    //  giration of fish
     
-    if(dirAngle + 0.1  < aFish.rotateFish) {
-        aFish.rotateFish -= 0.1;
+    if( dirAngle < 0) {      // convert to 0 to 2PI
+        dirAngle = 2 * PI + dirAngle;
     }
-    else if(dirAngle - 0.1 > aFish.rotateFish) {
+
+    if(aFish.rotateFish > 2 * PI) {
+        aFish.rotateFish -= 2 * PI;
+    }
+    if(aFish.rotateFish < 2 * PI) {
+        aFish.rotateFish += 2 * PI;
+    }
+
+    var angError = dirAngle - aFish.rotateFish;
+    
+    if(angError > (2 * PI)) {
+        angError -= (2 * PI);
+    }
+    else if(angError < (2 * PI)) {
+        angError += (2 * PI);
+    } 
+    
+    if(angError + 0.1  < 0) {
+        aFish.rotateFish -= 0.1;  //  TUNE
+    }
+    else if(angError - 0.1 > 0) {
         aFish.rotateFish += 0.1;
     }
     
+    
+
     dir.mult(force); 
     return dir;
 };
@@ -283,13 +306,11 @@ Particle.prototype.isDead = function(){
     return this.timeToLive < 0;
 };
 
-/*
-
 // object Squid     (sub-class)
                                          //  heading for a sub-object or sub-class.
 var Squid = function(position) {
   Particle.call(this, position);         // comma between this and position. 
-  this.squidSize = random(15, 30);
+  this.squidSize = random(4, 8);
 };
 
 Squid.prototype = Object.create(Particle.prototype);
@@ -297,14 +318,15 @@ Squid.prototype.constructor = Squid;
                                         // end of heading of the sub-class
 
 Squid.prototype.display = function(){
-    noStroke();
-    imageMode(CENTER);
-    var myImage = getImage("avatars/orange-juice-squid");
-    image(myImage,this.position.x, this.position.y, this.squidSize, this.squidSize);
-    
+//    noStroke();
+//    imageMode(CENTER);
+//    var myImage = getImage("avatars/orange-juice-squid");
+//   image(myImage,this.position.x, this.position.y, this.squidSize, this.squidSize);
+    stroke(0, 0, 0, this.timeToLive);
+    strokeWeight(2);
+    fill(238, 255, 0); 
+    rect(this.position.x, this.position.y, this.squidSize, this.squidSize);
 };
-
-*/
 
 // ParticleSystem object or class
 
@@ -315,11 +337,11 @@ var ParticleSystem = function(position) {
 
 ParticleSystem.prototype.addParticle = function(origin) {
     var r = random(1);
-    if (r < 0.99) {
+    if (r < 0.5) {
         this.particles.push(new Particle(origin));
     } 
     else {
-//        this.particles.push(new Squid(origin));    // working
+       this.particles.push(new Squid(origin));    // working
     }
 };
 
@@ -459,7 +481,7 @@ var keyPressed = function() {
     }
 };
 
- // Stop pasting here the code from the Khan place.
+// Stop pasting here the code from the Khan place.
 
 
     }};
