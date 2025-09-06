@@ -29,7 +29,7 @@
 
 angleMode = "radians";
 frameRate(60);               //  60
-size(400, 400);
+size(400, 400,0);
 
 var Fish = function(origin) { 
     
@@ -66,7 +66,7 @@ Fish.prototype.update = function() {
     this.velocity.add(this.acceleration);
     this.velocity.mult(this.linearFriction);  // friction
     this.position.add(this.velocity);
-    this.acceleration.mult(0);
+    this.acceleration.mult(0); 
     
     // This part for the fin
     
@@ -210,7 +210,7 @@ FishSystem.prototype.run = function(){
 
 //code for particle objects
 
-var gravity = new PVector(0, 0.01);
+var gravity = new PVector(0, 0.01); // 0.01
 
 var Particle = function(position) {
     this.acceleration = new PVector(0, 0);
@@ -246,26 +246,26 @@ Particle.prototype.calculateAtractForce = function(aFish) {
         dirAngle = 2 * PI + dirAngle;
     }
 
-    if(aFish.rotateFish > 2 * PI) {
-        aFish.rotateFish -= 2 * PI;
-    }
-    if(aFish.rotateFish < 2 * PI) {
-        aFish.rotateFish += 2 * PI;
-    }
-
-    var angError = dirAngle - aFish.rotateFish;
+    var angError = dirAngle - aFish.rotateFish; 
     
-    if(angError > (2 * PI)) {
-        angError -= (2 * PI);
+    if(this.rotateFish > 2 * PI) {
+        this.rotateFish -= 2 * PI;
     }
-    else if(angError < (2 * PI)) {
-        angError += (2 * PI);
-    } 
+    else if(this.rotateFish < 0) {
+        this.rotateFish += 2 * PI;
+    }
     
+    if(angError > PI) {
+      //  angError = (-2 * PI) + angError;
+    }
+    if(angError < (- PI)) {
+      //  angError = (2 * PI) - angError;
+    }
+    // regulate    
     if(angError + 0.1  < 0) {
         aFish.rotateFish -= 0.1;  //  TUNE
     }
-    else if(angError - 0.1 > 0) {
+    if(angError - 0.1 > 0) {
         aFish.rotateFish += 0.1;
     }
     
@@ -481,6 +481,7 @@ var keyPressed = function() {
     }
 };
 
+
 // Stop pasting here the code from the Khan place.
 
 
@@ -492,3 +493,4 @@ var keyPressed = function() {
   var processingInstance = new Processing(canvas, programCode); 
   </script>
 </html>
+
