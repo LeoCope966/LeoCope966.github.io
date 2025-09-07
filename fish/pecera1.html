@@ -246,24 +246,24 @@ Particle.prototype.calculateAtractForce = function(aFish) {
         dirAngle = 2 * PI + dirAngle;
     }
     
-    if(this.rotateFish > 2 * PI) {
-        this.rotateFish -= 2 * PI;
+    if(aFish.rotateFish > 2 * PI) {
+        aFish.rotateFish -= 2 * PI;
     }
-    else if(this.rotateFish < 0) {
-        this.rotateFish += 2 * PI;
+    else if(aFish.rotateFish < 0) {
+       aFish.rotateFish += 2 * PI;
     }
 
 	var angError = dirAngle - aFish.rotateFish; 
     
     if(angError > PI) {
-        angError = (-2 * PI) + angError;
+        angError -= 2 * PI;
     }
     else if(angError < (- PI)) {
-        angError = (2 * PI) - angError;
+        angError += 2 * PI;
     }
 	
     // regulate    
-    else if(angError + 0.1  < 0) {
+    if(angError + 0.1  < 0) {
         aFish.rotateFish -= 0.1;  //  TUNE
     }
     else if(angError - 0.1 > 0) {
@@ -492,6 +492,7 @@ var keyPressed = function() {
   var processingInstance = new Processing(canvas, programCode); 
   </script>
 </html>
+
 
 
 
