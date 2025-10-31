@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Project: Word game </title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+            }
+            form {
+                font-size: 1.5em;
+            }
+            .scrambled, input, button {
+                font-family: monospace;
+                font-size: 2em;
+            }
+            #text-output {
+                font-size: 3em;
+            }
+            #text-output2 {
+                font-size: 1.5em;
+            }
+            
+        </style>
+    </head>
+    <body>
+    
+    <h1>Word game!</h1>
+    <form id="joke-form">
+        <label>
+            Unscramble these letters to form a word:<Br>
+            <span id="scrWord" class="scrambled">REYJUQ</span>
+            <br>
+            <input type="text" size="10" name="input1">
+        </label>
+        <button type="submit">Check</button>
+    </form>
+    
+    <p id="text-output"></p>
+    
+   <form id="newData-form">
+        <label>
+            Enter a new word to scramble:<Br>
+            <br>
+            <input type="text" size="10" name="input2">
+        </label>
+        <button type="submit">Enter</button>
+    </form>
+    
+    <p id="text-output2"></p>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    
+    <script>
+    
+        //   when the user submits the form,
+        //   check that their answer is correct
+        //   and show them appropriate message
+        
+        // Scramble function
+        
+        var scrambleW = function(myString) {
+            
+            var len = myString.length;
+            var oldWord =[];
+ 
+            for(var i=0; i<len; i++) {
+                oldWord[i] = myString[i];
+            }
+        
+            var oldLen = oldWord.length ;
+            var newWord = [];
+            var newString = "";
+        
+            for(var i=0; i<oldLen; i++) {
+    
+               var randomInd1 = (oldLen -i) * Math.random();
+               var randomInd =  Math.floor(randomInd1);
+               newWord[i] = oldWord[randomInd];
+               oldWord.splice(randomInd, 1);
+               newString = newString + newWord[i];
+               
+            }   
+   
+            return newString;
+  
+        };
+      
+    var unscrambleWord ;
+
+        $('#joke-form').on('submit', function(event) {
+            
+            // Prevent the page from reloading
+            event.preventDefault();
+            
+            var scrText  =   $('#scrWord').text();
+            
+            // Set the text-output span to the value of the first input
+            var $input1 = $(this).find("[name=input1]");
+            var input1 = $input1.val();
+            
+            if(scrText === "REYJUQ")  { 
+            
+                if(input1 === "JQUERY") {
+                    $('#text-output').text("Great!");
+                } 
+                else {
+                    $('#text-output').text("Wrong answer, try again..");  
+                }
+            }
+            else {
+              
+                if(input1 === unscrambleWord) {
+                   $('#text-output').text("Great!");
+                } 
+                else {
+                   $('#text-output').text("Wrong answer, try again..");  
+                }  
+            }
+        });
+
+        $('#newData-form').on('submit', function(event) {
+            
+            // Prevent the page from reloading
+            event.preventDefault();
+            
+            // Reset input in first form
+            document.getElementById("joke-form").reset();
+            
+            // Set the text-output span to the value of the second input
+            var $input2 = $(this).find("[name=input2]");
+            var input2 = $input2.val();
+           // $('#text-output2').text("You typed: " + input2);
+            
+            unscrambleWord = input2 ;
+            
+            // call scrambleW(unscrambleWord) to scramble
+            
+            var scrambleWord = scrambleW(unscrambleWord);  
+            
+            $('#scrWord').text(scrambleWord);
+            $('#text-output').text("");
+            
+            // Reset input in second form
+            document.getElementById("newData-form").reset();
+     
+         });
+
+    </script>
+    </body>
+</html>
